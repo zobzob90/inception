@@ -1,0 +1,34 @@
+[server]
+
+[mysqld]
+# Fichier sql d'initialisation (exec au premier lancement)
+init_file 				= /etc/mysql/init.sql
+
+#Utilisateur sous lequel tourne mariadb
+user					= root
+
+# Emplacement de fichiers systeme
+pid-file				= /run/mysqld/mysqld.pid
+basedir					= /usr
+datadir 				= /var/lib/mysql
+tmpdir 					= /tmp
+lc-message-dir			= /usr/share/mysql
+lc-messages 			= en_US
+
+# Empeche les verrous externe
+skip-external-locking
+
+#Permet a d'autres Docker de se connecter(nginx et wordpress)
+bind-address			= 0.0.0.0
+
+# Nettoyage automatique des logs
+expire_logs_days		= 10
+
+character-set-server	= utf8mb4
+collation-server 		= utf8mb4_general_ci
+
+[embedded]
+
+[mariadb]
+
+[mariadb-10.5]
