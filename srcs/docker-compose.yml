@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  nginx:
+    build:
+      context: ./requirements/nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    ports:
+      - "443:443"
+    volumes:
+      - wordpress_data:/var/www/html
+      - ./requirements/nginx/conf:/etc/nginx.conf.d
+    depends_on:
+      - wordpress
+    networks:
+      - inception
+    restart: unless-stopped
+  
+  wordpress:
+    build:
+      context: ./requirements/wordpress
+      dockerfile: Dockerfile
+      container_name: wordpress
+      env_file: .env
+      volumes:
+        - wordpress_data:/var/www/html
+      depends_on : 
+        -mariadb
+      networks:
+      - inception
+    restart: unless-stopped
+
+    mariadb:
+      
