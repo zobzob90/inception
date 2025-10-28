@@ -53,7 +53,7 @@ volumes:
   wordpress_data:
     driver: local
     driver_opts:
-      type:none
+      type: none
       o: bind
       device: /home/ertrigna/data/wordpress
   mariadb_data:
