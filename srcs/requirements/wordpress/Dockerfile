@@ -24,4 +24,4 @@ COPY ./tools/setup.sh /usr/local/bin/setup.sh
 
 RUN chmod +x /usr/local/bin/setup.sh
 
-CMD ["./setup.sh"]
+CMD ["/usr/local/bin/setup.sh"]
