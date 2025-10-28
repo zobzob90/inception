@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
 	bash \
 	php \
 	php-fpm \
-	php7.4-fpm \
+	php8.2-fpm \
 	php-mysqli \
 	php-redis \
 	php-curl \
