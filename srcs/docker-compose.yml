@@ -1,6 +1,20 @@
 version: '3.8'
 
 services:
+  mariadb:
+    build:
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    container_name: mariadb
+    env_file: .env
+    ports: 
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - inception
+    restart: unless-stopped
+      
   nginx:
     build:
       context: ./requirements/nginx
@@ -10,7 +24,7 @@ services:
       - "443:443"
     volumes:
       - wordpress_data:/var/www/html
-      - ./requirements/nginx/conf:/etc/nginx.conf.d
+      - ./requirements/nginx/conf:/etc/nginx/conf.d
     depends_on:
       - wordpress
     networks:
@@ -21,15 +35,30 @@ services:
     build:
       context: ./requirements/wordpress
       dockerfile: Dockerfile
-      container_name: wordpress
-      env_file: .env
-      volumes:
-        - wordpress_data:/var/www/html
-      depends_on : 
-        -mariadb
-      networks:
+    container_name: wordpress
+    env_file: .env
+    volumes:
+      - wordpress_data:/var/www/html
+    depends_on: 
+      - mariadb
+    networks:
       - inception
     restart: unless-stopped
 
-    mariadb:
-      
+networks:
+  inception:
+    driver: bridge
+
+volumes:
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type:none
+      o: bind
+      device: /home/ertrigna/data/wordpress
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/ertrigna/data/mariadb
