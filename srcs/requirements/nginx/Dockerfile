@@ -2,7 +2,7 @@ FROM debian:bookworm
 
 #Installation de NGINX et OpenSSl
 RUN apt-get update && \
-	apt-get install -y nginx openssl && \ 
+	apt-get install -y nginx openssl && \
 	apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Creation des dossiers pour le certificat et la config
