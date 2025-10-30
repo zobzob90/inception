@@ -32,32 +32,33 @@ C’est un peu comme un Makefile de Docker, il permet de :
 - Lancer tous les services en une seule commande (docker compose up)
 - Gérer les dépendances entre containers (ex. WordPress dépend de MariaDB et Redis)
 - Configurer les volumes et réseaux pour que les containers puissent communiquer
-
 # 🔹 Architecture du projet
 
+```
 .
 ├── Makefile
 └── srcs
-├── docker-compose.yml # Fichier principal pour lancer tous les containers
-└── requirements
-├── mariadb
-│ ├── conf
-│ │ └── 50-server.cnf # Configuration du serveur MariaDB
-│ ├── Dockerfile # Dockerfile du container MariaDB
-│ └── tools
-│ └── setup.sh # Script de lancement et initialisation
-├── nginx
-│ ├── conf
-│ │ └── nginx.conf # Configuration Nginx (HTTPS, reverse proxy)
-│ ├── Dockerfile # Dockerfile du container Nginx
-│ └── tools
-│ └── setup.sh # Script de lancement Nginx
-├── tools
-│ └── host # Fichier contenant les adresses
-└── wordpress
-├── conf
-│ └── www.conf
-# Configuration PHP-FPM pour WordPress
-├── Dockerfile # Dockerfile du container WordPress (PHP + Redis)
-└── tools
-└── setup.sh # Script d'installation WordPress + plugin Redis
+    ├── docker-compose.yml          # Fichier principal pour lancer tous les containers
+    └── requirements
+        ├── mariadb
+        │   ├── conf
+        │   │   └── 50-server.cnf   # Configuration du serveur MariaDB
+        │   ├── Dockerfile           # Dockerfile du container MariaDB
+        │   └── tools
+        │       └── setup.sh        # Script de lancement et initialisation
+        ├── nginx
+        │   ├── conf
+        │   │   └── nginx.conf      # Configuration Nginx (HTTPS, reverse proxy)
+        │   ├── Dockerfile           # Dockerfile du container Nginx
+        │   └── tools
+        │       └── setup.sh        # Script de lancement Nginx
+        ├── tools
+        │   └── host                 # Fichier contenant les adresses
+        └── wordpress
+            ├── conf
+            │   └── www.conf        # Configuration PHP-FPM pour WordPress
+            ├── Dockerfile           # Dockerfile du container WordPress (PHP + Redis)
+            └── tools
+                └── setup.sh        # Script d'installation WordPress + plugin Redis
+```
+
