@@ -46,6 +46,17 @@ services:
       - inception
     restart: unless-stopped
 
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - inception
+    restart: unless-stopped
+
 networks:
   inception:
     driver: bridge
@@ -63,3 +74,5 @@ volumes:
       type: none
       o: bind
       device: /home/ertrigna/data/mariadb
+  redis_data:
+    driver:local

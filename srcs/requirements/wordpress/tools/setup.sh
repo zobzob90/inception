@@ -41,5 +41,16 @@ else
 	echo "✅ WordPress déjà installé."
 fi
 
+# --- Installer et activer Redis Object Cache ---
+if [ ! -d wp-content/plugins/redis-cache ]; then
+	echo "🌀 Installation du plugin Redis Object Cache..."
+	wget -O /tmp/redis-cache.zip https://downloads.wordpress.org/plugin/redis-cache.latest-stable.zip
+	unzip /tmp/redis-cache.zip -d wp-content/plugins/
+	rm /tmp/redis-cache.zip
+
+	wp plugin activate redis-cache --allow-root
+	wp redis enable --allow-root
+fi
+
 # Lancer PHP-FPM (au premier plan)
 exec php-fpm8.2 -R -F -d error_log=/dev/stderr
