@@ -75,4 +75,4 @@ volumes:
       o: bind
       device: /home/ertrigna/data/mariadb
   redis_data:
-    driver:local
+    driver: local
