@@ -48,6 +48,19 @@ if [ ! -d wp-content/plugins/redis-cache ]; then
 	unzip /tmp/redis-cache.zip -d wp-content/plugins/
 	rm /tmp/redis-cache.zip
 
+	# Ensure WP uses the redis service hostname (not 127.0.0.1) so the plugin can connect
+	if [ -f wp-config.php ]; then
+		if ! grep -q "WP_REDIS_HOST" wp-config.php; then
+			# Insert the constant before the first require_once (wp-settings.php) line
+			sed -i "0,/require_once/ s/require_once/define('WP_REDIS_HOST', 'redis');\nrequire_once/" wp-config.php
+			echo "Added WP_REDIS_HOST constant to wp-config.php"
+		else
+			echo "WP_REDIS_HOST already set in wp-config.php"
+		fi
+	fi
+
+	# Try to enable redis via WP-CLI (may fail if redis isn't ready yet)
+	wp redis enable --allow-root || echo "wp redis enable failed (redis may be unavailable); will retry later at runtime"
 	wp plugin activate redis-cache --allow-root
 	wp redis enable --allow-root
 fi

@@ -3,6 +3,7 @@ FROM debian:bookworm
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
+	unzip \
 	curl \
 	bash \
 	php \
@@ -16,9 +17,11 @@ RUN apt-get update && apt-get install -y \
 	wget \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN curl -o /tmp/redis-cache.zip https://downloads.wordpress.org/plugin/redis-cache.latest-stable.zip \
-	&& unzip /tmp/redis-cache.zip -d /usr/src/wordpress/wp-content/plugins/ \
-	&& rm /tmp/redis-cache.zip
+RUN set -eux; \
+	curl -fSL --retry 3 --retry-delay 5 -o /tmp/redis-cache.zip "https://downloads.wordpress.org/plugin/redis-cache.latest-stable.zip"; \
+	mkdir -p /usr/src/wordpress/wp-content/plugins/; \
+	unzip /tmp/redis-cache.zip -d /usr/src/wordpress/wp-content/plugins/; \
+	rm /tmp/redis-cache.zip
 
 RUN mkdir -p /workspace /run/php && chown -R www-data:www-data /workspace /run/php
 
