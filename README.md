@@ -6,8 +6,9 @@
 -  MariaDb
 -  Nginx
 -  WordPress
--  RedisCache (bonus)
--  HTTPS (bonus)
+-  RedisCache     (bonus)
+-  Adminer        (bonus)
+-  HTTPS          (bonus)
 
 # 🔹 Qu’est-ce qu’un Docker ?
 
@@ -32,6 +33,67 @@ C’est un peu comme un Makefile de Docker, il permet de :
 - Lancer tous les services en une seule commande (docker compose up)
 - Gérer les dépendances entre containers (ex. WordPress dépend de MariaDB et Redis)
 - Configurer les volumes et réseaux pour que les containers puissent communiquer
+
+# 🔹 MariaDB
+
+MariaDB (version gratuite de MySQL) est la base de donnees utilise par WordPress.
+Les donnees sont persistantes grace au volume 'mariadb_data' monte depuis l'hote.
+
+# 🔹 NGINX
+
+Nginx sert de reverse proxy, j'ai ajoute un service pour gerer une connexion securise (HTTP -> HTTPS)
+Il redirige les requetes vers WordPress et sert les fichiers statiques.
+- Le service recoit toutes les requetes venant des utilisateurs (HTTP ou HTTPS)
+- Il redirige les requetes vers le bon container interne: ici WordPress sur le port 9000
+- Il gere aussi le HTTPS, donc WordPress peut rester en HTTP a l'interieur du reseau Docker.
+
+Le client voit donc Nginx en premier pas directement WordPress.
+
+# 🔹 WordPress
+
+Permet d'avoir un site WordPress avec deux utilisateurs (admin et wp_user) qui sont creer automatiquement.
+
+# 🔹 Redis
+
+Redis est utilise comme cache objet pour WordPress, ce qui reduit le nombre de requetes SQL et accelere le site.
+
+# 🔹 Adminer
+
+Adminer est une interface web pour MariaDb, accessible sur le port 8081, elle permet d'acceder a un ensemble de data WordPress.
+
+# 🔹 Schema d'utilisation
+
+```
+                      ┌───────────────┐
+                      │  Navigateur   │
+                      │  Client       │
+                      └───────┬───────┘
+                              │ HTTPS / HTTP
+                              ▼
+                    ┌───────────────────┐
+                    │   Nginx (Reverse  │
+                    │      Proxy)       │
+                    │  - SSL/TLS        │
+                    │  - Redirection    │
+                    │    vers WordPress │
+                    └───────┬───────────┘
+                            │
+         ┌──────────────────┴──────────────────┐
+         ▼                                     ▼
+┌───────────────────┐                   ┌───────────────┐
+│ WordPress Container│                   │ Adminer       │
+│  - PHP-FPM         │                   │  - Gestion    │
+│  - Redis plugin    │                   │    MariaDB    │
+└─────────┬─────────┘                   └───────────────┘
+          │
+          ▼
+  ┌─────────────┐
+  │ MariaDB DB  │
+  └─────────────┘
+
+
+```
+
 # 🔹 Architecture du projet
 
 ```
