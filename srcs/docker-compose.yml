@@ -7,14 +7,26 @@ services:
       dockerfile: Dockerfile
     container_name: mariadb
     env_file: .env
-    ports: 
-      - "3306:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
       - inception
     restart: unless-stopped
-      
+
+  wordpress:
+    build:
+      context: ./requirements/wordpress
+      dockerfile: Dockerfile
+    container_name: wordpress
+    env_file: .env
+    volumes:
+      - wordpress_data:/var/www/html
+    depends_on: 
+      - mariadb
+    networks:
+      - inception
+    restart: unless-stopped
+    
   nginx:
     build:
       context: ./requirements/nginx
@@ -32,27 +44,11 @@ services:
       - inception
     restart: unless-stopped
   
-  wordpress:
-    build:
-      context: ./requirements/wordpress
-      dockerfile: Dockerfile
-    container_name: wordpress
-    env_file: .env
-    volumes:
-      - wordpress_data:/var/www/html
-    depends_on: 
-      - mariadb
-    networks:
-      - inception
-    restart: unless-stopped
-
   redis:
     build:
       context: ./requirements/bonus/redis
       dockerfile: Dockerfile
     container_name: redis
-    ports:
-      - "6379:6379"
     volumes:
       - redis_data:/data
     networks:

@@ -1,13 +1,20 @@
 FROM debian:bookworm
 
-RUN apt-get update && apt-get install -y mariadb-server mariadb-client
+# Installation de MariaDB
+RUN apt-get update && apt-get install -y \
+    mariadb-server \
+    mariadb-client \
+    && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /workspace
-
-COPY ./tools/setup.sh /workspace/setup.sh
-
+# Copie du fichier de configuration
 COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
-RUN chmod +x /workspace/setup.sh
+# Copie et permissions du script de setup
+COPY ./tools/setup.sh /usr/local/bin/setup.sh
+RUN chmod +x /usr/local/bin/setup.sh
 
-CMD ["./setup.sh"]
+# Exposition du port (documentation)
+EXPOSE 3306
+
+# Lancement du script
+CMD ["/usr/local/bin/setup.sh"]
