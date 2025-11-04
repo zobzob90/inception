@@ -68,6 +68,20 @@ services:
       - mariadb
     restart: unless-stopped
 
+  portainer:
+    build:
+      context: ./requirements/bonus/portainer
+      dockerfile: Dockerfile
+    container_name: portainer
+    ports:
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # Important !
+      - portainer_data:/data
+    networks:
+      - inception
+    restart: unless-stopped
+
 networks:
   inception:
     driver: bridge
@@ -86,4 +100,6 @@ volumes:
       o: bind
       device: /home/ertrigna/data/mariadb
   redis_data:
+    driver: local
+  portainer_data:
     driver: local
