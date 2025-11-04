@@ -9,6 +9,6 @@ openssl req -x509 -nodes \
 	-newkey rsa:4096
 
 chmod 644 /etc/nginx/ssl/inception.crt
-chmod 644 /etc/nginx/ssl/inception.key
+chmod 600 /etc/nginx/ssl/inception.key
 
 exec nginx -g "daemon off;"
