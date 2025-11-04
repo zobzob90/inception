@@ -47,7 +47,9 @@ services:
     restart: unless-stopped
 
   redis:
-    image: redis:alpine
+    build:
+      context: ./requirements/bonus/redis
+      dockerfile: Dockerfile
     container_name: redis
     ports:
       - "6379:6379"
@@ -58,7 +60,9 @@ services:
     restart: unless-stopped
 
   adminer:
-    image: adminer
+    build:
+      context: ./requirements/bonus/adminer
+      dockerfile: Dockerfile
     container_name: adminer
     ports:
       - "8081:8080"
@@ -66,6 +70,7 @@ services:
       - inception
     depends_on:
       - mariadb
+    restart: unless-stopped
 
 networks:
   inception:
