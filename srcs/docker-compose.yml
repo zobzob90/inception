@@ -68,6 +68,17 @@ services:
       - mariadb
     restart: unless-stopped
 
+  site:
+    build:
+      context: ./requirements/bonus/site
+      dockerfile: Dockerfile
+    container_name: site
+    ports:
+      - "8080:80"
+    networks:
+      - inception
+    restart: unless-stopped
+
 networks:
   inception:
     driver: bridge
@@ -86,6 +97,4 @@ volumes:
       o: bind
       device: /home/ertrigna/data/mariadb
   redis_data:
-    driver: local
-  portainer_data:
     driver: local
