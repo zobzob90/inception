@@ -1,7 +1,7 @@
 FROM alpine:3.19
 
 RUN apk update && apk upgrade && \
-	apk add --no-cache nginx && \
+	apk add --no-cache nginx openssl && \
 	mkdir -p /var/www/html && \
 	mkdir -p /run/nginx
 
@@ -14,6 +14,6 @@ COPY ./galery_photo /var/www/html/galery_photo/
 COPY ./tools/setup.sh /usr/local/bin/setup.sh
 RUN chmod +x /usr/local/bin/setup.sh
 
-EXPOSE 80
+EXPOSE 443
 
 CMD ["/usr/local/bin/setup.sh"]
