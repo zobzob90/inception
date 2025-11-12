@@ -91,21 +91,20 @@ services:
       - inception
     restart: unless-stopped
 
-    netdata:
+  cadvisor:
       build:
-        context: ./requirements/bonus/netdata
+        context: ./requirements/bonus/cadvisor
         dockerfile: Dockerfile
-      container_name: netdata
+      container_name: cadvisor
       ports:
-        - "19999:19999"
+        - "8082:8080"
       volumes:
-        - /proc:/host/proc:ro
-        - /sys:/host/sys:ro
-        - /var/run/docker.sock:/var/run/docker.sock
-      cap_add:
-        - SYS_PTRACE
-      security_opt:
-        - apparmor:unconfined
+        - /:/rootfs:ro
+        - /var/run:/var/run:ro
+        - /sys:/sys:ro
+        - /var/lib/docker/:/var/lib/docker:ro
+        - /dev/disk/:/dev/disk:ro
+      privileged: true
       networks:
         - inception
       restart: unless-stopped
