@@ -8,31 +8,51 @@
 -  WordPress
 -  RedisCache     (bonus)
 -  Adminer        (bonus)
--  HTTPS          (bonus)
+-  CAdvisor		  (bonus)
+-  Site statique  (bonus)
+-  FTP			  (bonus)
 
 # 🔹 Qu’est-ce qu’un Docker ?
 
-Un container Docker permet d’exécuter efficacement des applications isolées les unes des autres, mais sur le même système d’exploitation.
-Un container Docker est donc comme une mini-machine : il contient tout ce qu’il faut pour exécuter une application — code, dépendances, bibliothèques.
-Un container Docker tourne de façon indépendante par rapport aux autres containers, il est plus léger et se lance très rapidement.
-On peut imaginer un container Docker comme une boîte Tupperware : tout est emballé et transportable facilement.
+Un container Docker permet d’exécuter efficacement des applications isolées les unes des autres, mais partageant le même système d’exploitation.
+
+Un container Docker peut être vu comme une mini-machine :
+il contient tout le nécessaire pour exécuter une application — le code, les dépendances, les bibliothèques.
+
+Les containers :
+
+fonctionnent indépendamment,
+
+sont plus légers qu’une VM,
+
+se lancent très rapidement.
+
+On peut imaginer un container Docker comme une boîte Tupperware : tout est empaqueté proprement et transportable facilement.
 
 # 🔹Image Docker et Dockerfile
 
-Une image Docker est créée à partir d’un Dockerfile :
+Une image Docker est construite à partir d’un Dockerfile.
 
-- Une image Docker est immuable.
-- Le Dockerfile décrit les étapes pour installer une application et toutes ses dépendances.
-- On exécute l’image pour créer un container, qui est l’instance en fonctionnement.
+Une image Docker est immuable.
+
+Le Dockerfile décrit toutes les étapes nécessaires :
+installation, dépendances, configuration.
+
+Exécuter une image crée un container, c’est-à-dire une instance active.
 
 # 🔹 Docker Compose
 
-On utilise un fichier docker-compose.yml pour articuler plusieurs containers entre eux.
-C’est un peu comme un Makefile de Docker, il permet de :
+Le fichier docker-compose.yml sert à orchestrer plusieurs containers.
 
-- Lancer tous les services en une seule commande (docker compose up)
-- Gérer les dépendances entre containers (ex. WordPress dépend de MariaDB et Redis)
-- Configurer les volumes et réseaux pour que les containers puissent communiquer
+Il permet :
+
+de lancer tous les services en une seule commande (docker compose up),
+
+de définir les dépendances (ex. WordPress dépend de MariaDB et Redis),
+
+de configurer les volumes et les réseaux pour permettre la communication interne.
+
+C’est en quelque sorte un Makefile pour Docker.
 
 # 🔹 MariaDB
 
@@ -60,6 +80,82 @@ Redis est utilise comme cache objet pour WordPress, ce qui reduit le nombre de r
 # 🔹 Adminer
 
 Adminer est une interface web pour MariaDb, accessible sur le port 8081, elle permet d'acceder a un ensemble de data WordPress.
+
+# 🔹 cAdvisor
+
+Outil de monitoring développé par Google.
+
+Il permet d’observer en temps réel :
+
+la consommation CPU,
+
+la RAM,
+
+le stockage,
+
+le trafic réseau de chaque container Docker.
+
+# 🔹 FTP
+
+Service pour transferer des fichiers via Filezilla sur le site WordPress.
+
+# 🔹 Site statique
+
+Petit site en HTML et CSS avec une galerie photo.
+
+# 🔹 Volumes
+
+Les volumes Docker permettent de conserver les données persistantes des services même lorsque les containers sont arrêtés, supprimés ou reconstruits.
+Ils assurent aussi le partage de fichiers entre l’hôte et les containers.
+
+Dans ce projet, plusieurs volumes sont utilisés pour garantir la persistance et la modularité des services.
+
+🔸 1. MariaDB – Persistance des données SQL
+
+Volume : mariadb_data
+
+Il contient :
+
+toutes les tables WordPress,
+
+les utilisateurs SQL,
+
+les métadonnées,
+
+le contenu généré par WordPress.
+
+🎯 Si le container MariaDB est supprimé, les données restent intactes grâce au volume.
+
+🔸 2. WordPress – Persistance des fichiers du site
+
+Volume : wordpress_data
+
+Il contient :
+
+les fichiers uploadés via l’interface WordPress (uploads/),
+
+les thèmes installés,
+
+les plugins,
+
+les fichiers générés par WordPress.
+
+🎯 Sans ce volume, tout fichier uploadé via WordPress serait perdu après un rebuild.
+
+🔸 3. Nginx – Certificats SSL (si applicable)
+
+Si tu utilises un certificat SSL généré via OpenSSL dans le container :
+
+Volume : nginx_certs
+Il peut contenir :
+
+certificat .crt,
+
+clé privée .key.
+
+🎯 Cela évite d’avoir à regénérer les certificats à chaque rebuild.
+
+→ Si tu les génères localement avant le build, ce volume peut être optionnel.
 
 # 🔹 Schema d'utilisation
 
@@ -99,28 +195,73 @@ Adminer est une interface web pour MariaDb, accessible sur le port 8081, elle pe
 ```
 .
 ├── Makefile
+├── README.md
 └── srcs
-    ├── docker-compose.yml          # Fichier principal pour lancer tous les containers
+    ├── docker-compose.yml
     └── requirements
+        ├── bonus
+        │   ├── adminer
+        │   │   ├── conf
+        │   │   │   └── adminer.conf
+        │   │   ├── Dockerfile
+        │   │   └── tools
+        │   │       └── setup.sh
+        │   ├── cadvisor
+        │   │   └── Dockerfile
+        │   ├── ftp
+        │   │   ├── conf
+        │   │   │   └── vsftpd.conf
+        │   │   ├── Dockerfile
+        │   │   └── tools
+        │   │       └── setup.sh
+        │   ├── redis
+        │   │   ├── conf
+        │   │   │   └── redis.conf
+        │   │   ├── Dockerfile
+        │   │   └── tools
+        │   │       └── setup.sh
+        │   └── site
+        │       ├── conf
+        │       │   └── nginx.conf
+        │       ├── css
+        │       │   ├── galery_style.css
+        │       │   └── style.css
+        │       ├── Dockerfile
+        │       ├── galery_photo
+        │       │   ├── galery2.jpg
+        │       │   ├── galery3.jpg
+        │       │   ├── galery4.jpeg
+        │       │   ├── galery5.jpg
+        │       │   ├── galery6.jpg
+        │       │   ├── galery7.jpg
+        │       │   ├── galery.jpg
+        │       │   ├── index2.jpg
+        │       │   └── index.jpg
+        │       ├── html
+        │       │   ├── contact.html
+        │       │   ├── gallery.html
+        │       │   └── index.html
+        │       └── tools
+        │           └── setup.sh
         ├── mariadb
-        │   ├── conf
-        │   │   └── 50-server.cnf   # Configuration du serveur MariaDB
-        │   ├── Dockerfile           # Dockerfile du container MariaDB
-        │   └── tools
-        │       └── setup.sh        # Script de lancement et initialisation
+        │   ├── conf
+        │   │   └── 50-server.cnf
+        │   ├── Dockerfile
+        │   └── tools
+        │       └── setup.sh
         ├── nginx
-        │   ├── conf
-        │   │   └── nginx.conf      # Configuration Nginx (HTTPS, reverse proxy)
-        │   ├── Dockerfile           # Dockerfile du container Nginx
-        │   └── tools
-        │       └── setup.sh        # Script de lancement Nginx
+        │   ├── conf
+        │   │   └── nginx.conf
+        │   ├── Dockerfile
+        │   └── tools
+        │       └── setup.sh
         ├── tools
-        │   └── host                 # Fichier contenant les adresses
+        │   └── host
         └── wordpress
             ├── conf
-            │   └── www.conf        # Configuration PHP-FPM pour WordPress
-            ├── Dockerfile           # Dockerfile du container WordPress (PHP + Redis)
+            │   └── www.conf
+            ├── Dockerfile
             └── tools
-                └── setup.sh        # Script d'installation WordPress + plugin Redis
-```
+                └── setup.sh
 
+```

@@ -2,9 +2,9 @@ FROM debian:bookworm
 
 # Installation de MariaDB
 RUN apt-get update && apt-get install -y \
-    mariadb-server \
-    mariadb-client \
-    && rm -rf /var/lib/apt/lists/*
+	mariadb-server \
+	mariadb-client \
+	&& rm -rf /var/lib/apt/lists/*
 
 # Copie du fichier de configuration
 COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
