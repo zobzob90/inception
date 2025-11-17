@@ -4,18 +4,15 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Installation de PHP-FPM et dépendances
 RUN apt-get update && apt-get install -y \
-    unzip \
     curl \
-    bash \
-    php \
-    php-fpm \
+    wget \
+    unzip \
     php8.2-fpm \
     php8.2-mysqli \
-    php-redis \
-    php-curl \
-    php-xml \
-    php-mbstring \
-    wget \
+    php8.2-redis \
+    php8.2-curl \
+    php8.2-xml \
+    php8.2-mbstring \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
