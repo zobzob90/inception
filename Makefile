@@ -17,6 +17,7 @@ setup:
 	@echo "$(YELLOW)Creating data directories...$(NC)"
 	@mkdir -p $(DATA_PATH)/wordpress
 	@mkdir -p $(DATA_PATH)/mariadb
+	@mkdir -p $(DATA_PATH)/redis
 	@echo "$(GREEN)✓ Data directories created$(NC)"
 
 # Build all containers
@@ -76,6 +77,7 @@ fclean: down
 	@docker system prune -af --volumes
 	@sudo rm -rf $(DATA_PATH)/wordpress/*
 	@sudo rm -rf $(DATA_PATH)/mariadb/*
+	@sudo rm -rf $(DATA_PATH)/redis/*
 	@echo "$(GREEN)✓ Full cleanup complete$(NC)"
 
 # Rebuild everything from scratch
