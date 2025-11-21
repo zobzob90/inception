@@ -2,7 +2,7 @@
 
 # Variables
 COMPOSE_FILE = srcs/docker-compose.yml
-DATA_PATH = /home/ertrigna/data
+DATA_PATH = $(HOME)/data
 
 # Colors for pretty output
 GREEN = \033[0;32m
