@@ -1,7 +1,7 @@
 .PHONY: all build up down start stop restart clean fclean re logs ps
 
 # Variables
-COMPOSE_FILE = srcs/docker compose.yml
+COMPOSE_FILE = srcs/docker-compose.yml
 DATA_PATH = $(HOME)/data
 
 # Colors for pretty output
@@ -23,46 +23,46 @@ setup:
 # Build all containers
 build: setup
 	@echo "$(YELLOW)Building Docker containers...$(NC)"
-	@docker compose -f $(COMPOSE_FILE) build
+	@docker-compose -f $(COMPOSE_FILE) build
 	@echo "$(GREEN)✓ Build complete$(NC)"
 
 # Build and start containers in detached mode
 up: setup
 	@echo "$(YELLOW)Starting containers...$(NC)"
-	@docker compose -f $(COMPOSE_FILE) up -d
+	@docker-compose -f $(COMPOSE_FILE) up -d
 	@echo "$(GREEN)✓ Containers are running$(NC)"
 
 # Stop and remove containers
 down:
 	@echo "$(YELLOW)Stopping containers...$(NC)"
-	@docker compose -f $(COMPOSE_FILE) down
+	@docker-compose -f $(COMPOSE_FILE) down
 	@echo "$(GREEN)✓ Containers stopped$(NC)"
 
 # Start existing containers
 start:
 	@echo "$(YELLOW)Starting containers...$(NC)"
-	@docker compose -f $(COMPOSE_FILE) start
+	@docker-compose -f $(COMPOSE_FILE) start
 	@echo "$(GREEN)✓ Containers started$(NC)"
 
 # Stop running containers
 stop:
 	@echo "$(YELLOW)Stopping containers...$(NC)"
-	@docker compose -f $(COMPOSE_FILE) stop
+	@docker-compose -f $(COMPOSE_FILE) stop
 	@echo "$(GREEN)✓ Containers stopped$(NC)"
 
 # Restart containers
 restart:
 	@echo "$(YELLOW)Restarting containers...$(NC)"
-	@docker compose -f $(COMPOSE_FILE) restart
+	@docker-compose -f $(COMPOSE_FILE) restart
 	@echo "$(GREEN)✓ Containers restarted$(NC)"
 
 # View logs
 logs:
-	@docker compose -f $(COMPOSE_FILE) logs -f
+	@docker-compose -f $(COMPOSE_FILE) logs -f
 
 # Show running containers
 ps:
-	@docker compose -f $(COMPOSE_FILE) ps
+	@docker-compose -f $(COMPOSE_FILE) ps
 
 # Clean containers and images
 clean: down
@@ -73,7 +73,7 @@ clean: down
 # Full clean including volumes
 fclean: down
 	@echo "$(RED)Removing everything (containers, images, volumes, data)...$(NC)"
-	@docker compose -f $(COMPOSE_FILE) down -v
+	@docker-compose -f $(COMPOSE_FILE) down -v
 	@docker system prune -af --volumes
 	@rm -rf $(DATA_PATH)/wordpress
 	@rm -rf $(DATA_PATH)/mariadb
