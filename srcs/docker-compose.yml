@@ -81,9 +81,10 @@ services:
       context: ./requirements/bonus/ftp
       dockerfile: Dockerfile
     container_name: ftp
+    env_file: .env
     ports:
       - "21:21" #Port Ftp principale
-      - "21000-21010:21000-21010" #ports passif
+      - "21000-21100:21000-21100" #ports passif
     volumes:
       - wordpress_data:/var/www/html
     networks:
