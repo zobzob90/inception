@@ -76,20 +76,20 @@ services:
       - inception
     restart: unless-stopped
 
-  ftp:
-    build:
-      context: ./requirements/bonus/ftp
-      dockerfile: Dockerfile
-    container_name: ftp
-    env_file: .env
-    ports:
-      - "21:21" #Port Ftp principale
-      - "21000-21100:21000-21100" #ports passif
-    volumes:
-      - wordpress_data:/var/www/html
-    networks:
-      - inception
-    restart: unless-stopped
+  # ftp:
+  #   build:
+  #     context: ./requirements/bonus/ftp
+  #     dockerfile: Dockerfile
+  #   container_name: ftp
+  #   env_file: .env
+  #   ports:
+  #     - "21:21" #Port Ftp principale
+  #     - "21000-21100:21000-21100" #ports passif
+  #   volumes:
+  #     - wordpress_data:/var/www/html
+  #   networks:
+  #     - inception
+  #   restart: unless-stopped
 
   cadvisor:
       build:
