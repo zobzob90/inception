@@ -1,5 +1,13 @@
 #!/bin/bash
-set -e  # stoppe le script en cas d’erreur
+set -e  # stoppe le script en cas d'erreur
+
+# Détection automatique du port depuis la variable d'environnement ou défaut
+MYSQL_PORT=${MYSQL_PORT:-3306}
+
+# Configuration du port dans MariaDB si différent de 3306
+if [ "$MYSQL_PORT" != "3306" ]; then
+    echo "port = $MYSQL_PORT" >> /etc/mysql/mariadb.conf.d/50-server.cnf
+fi
 
 # Création du fichier d'initialisation SQL
 cat <<EOF > /etc/mysql/init.sql

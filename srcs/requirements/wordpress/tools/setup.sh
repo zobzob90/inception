@@ -23,7 +23,7 @@ if [ ! -f wp-config.php ]; then
 		--dbname="${MYSQL_DATABASE}" \
 		--dbuser="${MYSQL_USER}" \
 		--dbpass="${MYSQL_PASSWORD}" \
-		--dbhost="${MYSQL_HOST}"
+		--dbhost="${MYSQL_HOST}:${MYSQL_PORT:-3306}"
 
 	wp core install \
 		--allow-root \
@@ -48,12 +48,12 @@ if [ ! -d wp-content/plugins/redis-cache ]; then
 	unzip /tmp/redis-cache.zip -d wp-content/plugins/
 	rm /tmp/redis-cache.zip
 
-	# Ensure WP uses the redis service hostname (not 127.0.0.1) so the plugin can connect
+	# Ensure WP uses the redis service hostname and port
 	if [ -f wp-config.php ]; then
 		if ! grep -q "WP_REDIS_HOST" wp-config.php; then
-			# Insert the constant before the first require_once (wp-settings.php) line
-			sed -i "0,/require_once/ s/require_once/define('WP_REDIS_HOST', 'redis');\nrequire_once/" wp-config.php
-			echo "Added WP_REDIS_HOST constant to wp-config.php"
+			# Insert the Redis constants before the first require_once (wp-settings.php) line
+			sed -i "0,/require_once/ s/require_once/define('WP_REDIS_HOST', '${WP_REDIS_HOST}');\ndefine('WP_REDIS_PORT', ${WP_REDIS_PORT:-6379});\nrequire_once/" wp-config.php
+			echo "Added WP_REDIS_HOST and WP_REDIS_PORT constants to wp-config.php"
 		else
 			echo "WP_REDIS_HOST already set in wp-config.php"
 		fi
