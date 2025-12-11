@@ -1,25 +1,24 @@
 #!/bin/bash
-set -e  # stoppe le script en cas d'erreur
+set -e
 
-# Détection automatique du port depuis la variable d'environnement ou défaut
 MYSQL_PORT=${MYSQL_PORT:-3306}
 
-# Configuration du port dans MariaDB si différent de 3306
 if [ "$MYSQL_PORT" != "3306" ]; then
     echo "port = $MYSQL_PORT" >> /etc/mysql/mariadb.conf.d/50-server.cnf
 fi
 
-# Création du fichier d'initialisation SQL
+# Configuration avec mot de passe root
 cat <<EOF > /etc/mysql/init.sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
+CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
 CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;
 CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
 GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
 FLUSH PRIVILEGES;
 EOF
 
-# Creation du dossier de socket si inexistant
 mkdir -p /run/mysqld
 chown -R mysql:mysql /run/mysqld
 
-# Lancement du serveur MariaDB
-exec mysqld
+exec mysqld --init-file=/etc/mysql/init.sql
